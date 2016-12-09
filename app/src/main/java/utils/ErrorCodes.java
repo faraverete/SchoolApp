@@ -7,6 +7,7 @@ package utils;
 public enum ErrorCodes {
     EMPTY_FIELD,
     INVALID_PHONE,
+    INVALID_GRADE,
     OK
 
 }

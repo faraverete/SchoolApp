@@ -21,5 +21,6 @@ public class Constants {
             "Send an email to a student \n";
     public static final String buttonForAdminAdd = "ADD STUDENT";
     public static final String buttonForLogout = "LOGOUT";
+    public static final String buttonForStudentsView = "VIEW STUDENTS";
 
 }
