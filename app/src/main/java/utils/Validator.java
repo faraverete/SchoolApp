@@ -19,12 +19,8 @@ public class Validator {
             return ErrorCodes.EMPTY_FIELD;
         } else if (!em.contains("@")) {
             return ErrorCodes.EMPTY_FIELD;
-        } else for (int i = 0; i < j; i++) {
-            if (grades[i] < 1 || grades[i] > 10) {
-                return ErrorCodes.INVALID_GRADE;
-            }
-
         }
+
         return ErrorCodes.EMPTY_FIELD.OK;
     }
 }
