@@ -1,13 +1,10 @@
 package faraverete.schoolapp.activities;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import faraverete.schoolapp.R;
@@ -31,12 +28,6 @@ public class MainActivity extends AppCompatActivity {
         TextView appDetailsText = (TextView) findViewById(R.id.AppDetailsAdminText);
         appDetailsText.setText(Constants.AppDetailsAdminText);
 
-    }
-
-    public void ViewStudents(View view) {
-        Intent intent = new Intent(MainActivity.this, StudentsActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     public void AddStudents(View view) {

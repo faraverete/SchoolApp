@@ -2,14 +2,15 @@ package faraverete.schoolapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -20,7 +21,6 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -38,52 +38,12 @@ public class AddStudentActivity extends AppCompatActivity {
     private EditText editGrades;
 
     private Button addButton;
+    private Button refreshButton;
 
-    //array that holds the requests
+    public static ListView show;
+
     public static ArrayList<Request> requestArray = new ArrayList<Request>();
 
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
-
-        editName = (EditText) findViewById(R.id.NameInput);
-        editEmail = (EditText) findViewById(R.id.EmailInput);
-        editAddress = (EditText) findViewById(R.id.AddressInput);
-        editGrades = (EditText) findViewById(R.id.GradesInput);
-
-    }
-
-    public void InsertStudent(View view) {
-        String name = editName.getText().toString();
-        String email = editEmail.getText().toString();
-        String address = editAddress.getText().toString();
-        String grades = editGrades.getText().toString();
-
-        Request r = new Request(name, email, address, grades);
-
-        if (contains(requestArray, r)) {
-            Toast.makeText(getBaseContext(), "Item already in the list", Toast.LENGTH_LONG).show();
-        } else if (name == null || name.trim().equals("") || address == null || address.trim().equals("") || email == null || email.equals("") || grades == null | grades.equals("")) {
-            Toast.makeText(getBaseContext(), "Some input is empty", Toast.LENGTH_LONG).show();
-        } else {
-            requestArray.add(r);
-
-            ((EditText) findViewById(R.id.NameInput)).setText("");
-            ((EditText) findViewById(R.id.EmailInput)).setText("");
-            ((EditText) findViewById(R.id.AddressInput)).setText("");
-            ((EditText) findViewById(R.id.GradesInput)).setText("");
-
-            try {
-                createFile(view, AddStudentActivity.this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -97,7 +57,7 @@ public class AddStudentActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        View view = findViewById(R.id.NameTextView);
+        View view = findViewById(R.id.MyListView);
         goBack(view);
     }
 
@@ -111,7 +71,7 @@ public class AddStudentActivity extends AppCompatActivity {
     public static boolean contains(ArrayList<Request> list, Request r) {
         for (Iterator<Request> i = list.iterator(); i.hasNext(); ) {
             Request req = i.next();
-            if (req.getAddress().equals(r.getAddress()) && req.getEmail().equals(r.getEmail()) && req.getName().equals(r.getEmail())) {
+            if (req.getGrades().equals(r.getGrades()) && req.getAddress().equals(r.getAddress()) && req.getEmail().equals(r.getEmail()) && req.getName().equals(r.getName())) {
                 return true;
             }
         }
@@ -157,7 +117,7 @@ public class AddStudentActivity extends AppCompatActivity {
             String email = data.getJSONObject(i).getString("email");
             String address = data.getJSONObject(i).getString("address");
             String grades = data.getJSONObject(i).getString("grades");
-            String[] items = grades.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            //String[] items = grades.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
 
 
             Request r = new Request(name, email, address, grades);
@@ -166,6 +126,106 @@ public class AddStudentActivity extends AppCompatActivity {
     }
 
 
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add);
+
+        editName = (EditText) findViewById(R.id.NameInput);
+        editEmail = (EditText) findViewById(R.id.EmailInput);
+        editAddress = (EditText) findViewById(R.id.AddressInput);
+        editGrades = (EditText) findViewById(R.id.GradesInput);
+
+        addButton = (Button) findViewById(R.id.addButton);
+        refreshButton = (Button) findViewById(R.id.refreshButton);
+        show = (ListView) findViewById(R.id.MyListView);
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    readFile(v, AddStudentActivity.this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (requestArray.isEmpty()) {
+                    Toast.makeText(getBaseContext(), "List is empty", Toast.LENGTH_LONG).show();
+                } else {
+                    ArrayAdapter<Request> adapter =
+                            new ArrayAdapter<Request>(AddStudentActivity.this, android.R.layout.simple_list_item_1, requestArray);
+                    show.setAdapter(adapter);
+                }
+            }
+
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String getName = editName.getText().toString();
+                String getEmail = editEmail.getText().toString();
+                String getAddress = editAddress.getText().toString();
+                String getGrades = editGrades.getText().toString();
+
+                Request r = new Request(getName, getEmail, getAddress, getGrades);
+
+                if (contains(requestArray, r)) {
+                    Toast.makeText(getBaseContext(), "Item already in the list", Toast.LENGTH_LONG).show();
+                } else if (getName == null || getName.trim().equals("") || getEmail == null || getEmail.equals("")
+                        || getAddress == null || getAddress.trim().equals("") || getGrades == null || getGrades.trim().equals("")) {
+                    Toast.makeText(getBaseContext(), "Some input is empty", Toast.LENGTH_LONG).show();
+                } else {
+                    requestArray.add(r);
+                    ArrayAdapter<Request> adapter =
+                            new ArrayAdapter<Request>(AddStudentActivity.this, android.R.layout.simple_list_item_1, requestArray);
+                    show.setAdapter(adapter);
+                    ((EditText) findViewById(R.id.NameInput)).setText("");
+                    ((EditText) findViewById(R.id.EmailInput)).setText("");
+                    ((EditText) findViewById(R.id.AddressInput)).setText("");
+                    ((EditText) findViewById(R.id.GradesInput)).setText("");
+
+                    try {
+                        createFile(v, AddStudentActivity.this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        });
+
+        show.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Request selectedFromList = (Request) (show.getItemAtPosition(position));
+
+                Intent intent = new Intent(view.getContext(), ModifiyActivity.class);
+                intent.putExtra("itemName", selectedFromList.getName());
+                intent.putExtra("itemEmail", selectedFromList.getEmail());
+                intent.putExtra("itemAddress", selectedFromList.getAddress());
+                intent.putExtra("itemGrades", selectedFromList.getGrades());
+
+
+                ArrayList<String> studentsNames = new ArrayList<String>();
+                for (int i = 0; i < requestArray.size(); i++) {
+                    studentsNames.add(requestArray.get(i).getName());
+                }
+
+                intent.putExtra("arrayStudentsNames", studentsNames);
+                intent.putExtra("itemPosition", position);
+
+                AddStudentActivity.this.startActivityForResult(intent, 0);
+            }
+        });
+    }
+
 
 
 }
+
+
+
