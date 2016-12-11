@@ -18,7 +18,15 @@
         </activity>
         <activity android:name=".activities.AddStudentActivity"></activity>
         <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.ChartActivity">
+            <intent-filter>
+                <action android:name="faraverete.schoolapp.activities.ChartActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.ModifiyActivity"></activity>
+
     </application>
 
 </manifest>

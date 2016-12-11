@@ -50,15 +50,24 @@ public class ModifiyActivity extends AppCompatActivity {
     }
 
 
+//    public void GoToChartActivity(View view) {
+//        Intent intent = new Intent(ModifiyActivity.this, ChartActivity.class);
+//        intent.putExtra("arrayStudentNamesFromModifyActivity", studentNamesArray);
+//        startActivity(intent);
+//        finish();
+//    }
+//
+
+
     public void onClickChartButton() {
-        convert(gradesArray, grades);
+        //convert(gradesArray, grades);
         chartButton = (Button) findViewById(R.id.ChartButton);
 
         chartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent("faraverete.schoolapp.activities.ChartActivity");
-                intent.putExtra("arrayStudentNamesFromModifyActivity", grades);
+                intent.putExtra("arrayStudentNamesFromModifyActivity", studentNamesArray);
                 startActivity(intent);
             }
 
